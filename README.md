@@ -162,4 +162,4 @@ corresponding source code. Third-party components keep their own licences:
 
 Want Casefile set up and run for your firm or a specific case? I offer setup on your own cloud, file processing, and ongoing support.
 
-Contact: [hunainibnshakeel@gmail.com](mailto:hunainibnshakeel@gmail.com)
+Contact: [hunainahmedx@gmail.com](mailto:hunainahmedx@gmail.com)
