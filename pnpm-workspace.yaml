@@ -7,3 +7,12 @@ packages:
 # message it could not load with only a console line; the patch fixes both (D110).
 patchedDependencies:
   pst-extractor@1.12.0: patches/pst-extractor@1.12.0.patch
+
+# DEPS-1: transitive packages with a security alert, raised to the lowest fixed version (D135). Here and not
+# in package.json's "pnpm" field, which pnpm 10.28 reports it no longer reads.
+overrides:
+  brace-expansion@5: 5.0.12
+  fast-uri@3: 3.1.8
+  fast-uri@4: 4.1.5
+  ip-address@10: 10.7.1
+  uuid@<11.1.1: 11.1.1

@@ -38,6 +38,15 @@ Every file in `test-corpus/` and every generated fake document was made by this 
 hand, with invented names and reserved example domains ([test-corpus/SOURCES.md](test-corpus/SOURCES.md)). No
 third-party fixture is included.
 
+### SheetJS Community Edition 0.20.3 (Apache-2.0)
+
+`vendor/xlsx-0.20.3.tgz` is the `xlsx` package exactly as SheetJS publishes it at
+https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz (2,409,319 bytes, SHA-256
+`8dc73fc3b00203e72d176e85b50938627c7b086e607c682e8d3c22c02bb99fe8`), unmodified. SheetJS no longer publishes to
+npm, where the last version, 0.18.5, has two open security advisories; the lockfile pins the tarball's sha512
+(decision D135). It is (C) 2013-present SheetJS (its own header), under the Apache License 2.0; the licence text is
+inside the tarball (`package/LICENSE`).
+
 ## Not in this repository
 
 - **PSTFileFormat** (by ROM Knowledgeware, LGPL-3.0-or-later) and **Microsoft's `Empty.pst`** (from
@@ -51,11 +60,12 @@ third-party fixture is included.
 
 ## Dependencies installed from npm
 
-Casefile's dependencies are not copied into the repository; `pnpm install` downloads them, each under its own
-licence. The production dependencies (289 packages in `pnpm licenses list --prod`, 2026-09-30) are under
-permissive licences: MIT (230), Apache-2.0 (22), BSD-2-Clause (11), ISC (11), BSD-3-Clause (8), and one each of
-0BSD, MIT-0 (nodemailer), Unlicense (postgres), BSD (duck), MIT AND Zlib (pako), MIT OR EUPL-1.1+
-(@zone-eu/mailsplit), MIT OR GPL-3.0-or-later (jszip, used under MIT). None is copyleft-only.
+Casefile's dependencies are not copied into the repository (except the SheetJS tarball above); `pnpm install`
+downloads them, each under its own licence. The production dependencies (281 packages in `pnpm licenses list
+--prod`, 2026-10-01) are under permissive licences: MIT (230), Apache-2.0 (14), BSD-2-Clause (11), ISC (11),
+BSD-3-Clause (8), and one each of 0BSD, MIT-0 (nodemailer), Unlicense (postgres), BSD (duck), MIT AND Zlib
+(pako), MIT OR EUPL-1.1+ (@zone-eu/mailsplit), MIT OR GPL-3.0-or-later (jszip, used under MIT). None is
+copyleft-only.
 
 The direct production dependencies:
 
@@ -66,20 +76,20 @@ The direct production dependencies:
 | @kenjiuno/msgreader | 1.28.0 | Apache-2.0 |
 | @modelcontextprotocol/sdk | 1.30.0 | MIT |
 | @simplewebauthn/server | 13.3.3 | MIT |
-| adm-zip | 0.6.0 | MIT |
+| adm-zip | 0.6.1 | MIT |
 | argon2 | 0.41.1 | MIT |
 | fastify | 5.12.1 | MIT |
 | google-auth-library | 9.15.1 | Apache-2.0 |
 | html-to-text | 10.0.1 | MIT |
 | long | 5.3.2 | Apache-2.0 |
-| mailparser | 3.9.20 | MIT |
+| mailparser | 3.9.32 | MIT |
 | mammoth | 1.12.2 | BSD-2-Clause |
 | pdf-lib | 1.17.1 | MIT |
 | postgres | 3.4.9 | Unlicense |
 | pst-extractor | 1.12.0 (patched, above) | MIT |
 | unpdf | 1.8.1 | MIT |
 | word-extractor | 1.0.4 | MIT |
-| xlsx | 0.18.5 | Apache-2.0 |
+| xlsx | 0.20.3 (vendored, above) | Apache-2.0 |
 | zod | 3.25.76 | MIT |
 
 To see the full, current list: `pnpm licenses list --prod`. A Docker image built from the `Dockerfile` contains

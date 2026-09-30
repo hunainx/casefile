@@ -52,7 +52,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.68.0",
-    "vitest": "^2.1.8",
+    "vitest": "^4.1.11",
     "yaml": "^2.6.1"
   },
   "dependencies": {
@@ -60,15 +60,15 @@
     "@kenjiuno/msgreader": "^1.28.0",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@simplewebauthn/server": "^13.3.3",
-    "adm-zip": "^0.6.0",
+    "adm-zip": "^0.6.1",
     "html-to-text": "^10.0.1",
     "long": "5.3.2",
-    "mailparser": "^3.9.20",
+    "mailparser": "^3.9.32",
     "mammoth": "^1.12.2",
     "pdf-lib": "^1.17.1",
     "postgres": "^3.4.9",
     "pst-extractor": "1.12.0",
     "word-extractor": "^1.0.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "file:vendor/xlsx-0.20.3.tgz"
   }
 }

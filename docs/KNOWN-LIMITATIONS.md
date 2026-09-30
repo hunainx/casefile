@@ -85,6 +85,17 @@ These differ from the original specification on purpose, and each is explained i
 - **`/ready` when the database is down** answers 500, not 503. The 500 is the generic "unexpected error" reply
   with a request ID; the health checks `/healthz` answer 503.
 - **No external security review** has been done. See [SECURITY.md](../SECURITY.md) for how to report a problem.
+- **Dependency alerts.** On 2026-10-01 all 40 open Dependabot alerts were fixed by updating packages (D135);
+  none was dismissed. Two things are not watched automatically and need a person:
+  - **The spreadsheet reader (SheetJS `xlsx` 0.20.3) is a file in the repository**, `vendor/xlsx-0.20.3.tgz`,
+    because SheetJS no longer publishes to npm. Dependabot and `pnpm audit` cannot see it, so nothing will warn
+    when SheetJS fixes a new problem. Check SheetJS's own site (cdn.sheetjs.com) now and then; to update, replace
+    the file, point both `file:` entries (root and `apps/api` package.json) at it and run the before/after
+    capture.
+  - **Five indirect packages are held at one exact version** by `overrides` in `pnpm-workspace.yaml`
+    (brace-expansion, fast-uri 3 and 4, ip-address, uuid). They stay at that version even when a later one
+    exists, so a future fix in them needs the override raised by hand. uuid is held at 11 although gaxios asks for
+    9; gaxios only uses `v4()`, which did not change.
 
 ## Resolved in the final step (for the record)
 

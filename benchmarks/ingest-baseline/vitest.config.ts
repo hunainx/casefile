@@ -25,7 +25,10 @@ export default defineConfig({
     include: ["benchmarks/ingest-baseline/ingest-baseline.bench-run.ts"],
     environment: "node",
     pool: "forks",
-    poolOptions: { forks: { singleFork: true, execArgv: ["--max-old-space-size=8192"] } },
+    // Vitest 4 removed poolOptions (D135): one fork, not isolated, same heap size as before.
+    maxWorkers: 1,
+    isolate: false,
+    execArgv: ["--max-old-space-size=8192"],
     fileParallelism: false,
     testTimeout: 4 * 60 * 60 * 1000,
     hookTimeout: 60_000,

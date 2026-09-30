@@ -20,6 +20,8 @@ COPY packages/mock-provider/package.json ./packages/mock-provider/
 COPY packages/mcp/package.json ./packages/mcp/
 # pnpm applies patches/ during install (pnpm-workspace.yaml patchedDependencies)
 COPY patches/ ./patches/
+# D135: xlsx is installed from the vendored SheetJS tarball (the lockfile pins its sha512)
+COPY vendor/ ./vendor/
 
 # Install dependencies with frozen lockfile
 RUN pnpm install --frozen-lockfile

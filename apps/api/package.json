@@ -21,17 +21,17 @@
     "@kenjiuno/msgreader": "^1.28.0",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@simplewebauthn/server": "^13.3.3",
-    "adm-zip": "^0.6.0",
+    "adm-zip": "^0.6.1",
     "argon2": "^0.41.1",
     "fastify": "^5.2.1",
     "html-to-text": "^10.0.1",
-    "mailparser": "^3.9.20",
+    "mailparser": "^3.9.32",
     "mammoth": "^1.12.2",
     "pdf-lib": "^1.17.1",
     "postgres": "^3.4.9",
     "unpdf": "^1.8.1",
     "word-extractor": "^1.0.4",
-    "xlsx": "^0.18.5",
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz",
     "zod": "^3.24.1"
   }
 }
