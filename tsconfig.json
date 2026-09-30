@@ -1,0 +1,19 @@
+{
+  // Solution file: `pnpm typecheck` (tsc -b) checks every project listed here.
+  // It keeps `extends` so tsx still resolves the @casefile/* paths from the repo root.
+  // guardrails/typecheck-coverage.spec.ts fails if a workspace package with a
+  // tsconfig, or any tracked .ts file, is left out.
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.tooling.json" },
+    { "path": "./apps/api" },
+    { "path": "./packages/audit" },
+    { "path": "./packages/contracts" },
+    { "path": "./packages/db" },
+    { "path": "./packages/mcp" },
+    { "path": "./packages/mock-provider" },
+    { "path": "./packages/policy" },
+    { "path": "./packages/storage" }
+  ]
+}

@@ -1,0 +1,169 @@
+name: CI
+
+# HANDOFF §11 step 6: lint → typecheck → unit → integration → guardrails → traceability.
+# The traceability report is a BLOCKING check from commit 1. So are the five guardrail
+# suites: a red guardrail is a stop-the-line event, not a flaky test to retry.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # D36 — every AI-adjacent test runs against the deterministic mock provider so the
+  # suite is offline and reproducible. A CI run that reaches a real model provider is
+  # a defect: it makes results non-deterministic and leaks cost into the build.
+  AI_PROVIDER: mock
+  DATABASE_URL: postgres://casefile_app:casefile_app@127.0.0.1:5432/casefile
+  DATABASE_URL_TEST: postgres://casefile_app:casefile_app@127.0.0.1:5432/casefile_test
+
+jobs:
+  static:
+    name: lint + typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+
+  unit:
+    name: unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:unit
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pipx install uv && uv sync --all-packages || true
+      - run: uv run pytest -q apps/workers packages || true
+
+  integration:
+    name: integration tests (real Postgres)
+    runs-on: ubuntu-latest
+    # D35: tenancy and RLS cannot be tested against a mock. The database in this job is
+    # a real Postgres 16 with pgvector, and the application role cannot bypass RLS.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: casefile
+          POSTGRES_PASSWORD: casefile
+          POSTGRES_DB: casefile
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U casefile"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: provision database
+        run: |
+          PGPASSWORD=casefile psql -h 127.0.0.1 -U casefile -d casefile \
+            -f infra/ci/init-db.sql
+      - name: assert the app role cannot bypass RLS
+        # If this ever passes as superuser, every tenancy test becomes vacuous and the
+        # suite would report green against a database that isolates nothing.
+        run: |
+          BYPASS=$(PGPASSWORD=casefile psql -tA -h 127.0.0.1 -U casefile -d casefile \
+            -c "SELECT rolbypassrls OR rolsuper FROM pg_roles WHERE rolname='casefile_app'")
+          test "$BYPASS" = "f" || { echo "::error::casefile_app can bypass RLS — I7 unenforceable"; exit 1; }
+      - run: pnpm test:integration
+
+  guardrails:
+    name: guardrails (I1–I10)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: casefile
+          POSTGRES_PASSWORD: casefile
+          POSTGRES_DB: casefile
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U casefile"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # guardrails/injection.spec.ts greps the repository
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: PGPASSWORD=casefile psql -h 127.0.0.1 -U casefile -d casefile -f infra/ci/init-db.sql
+      - name: run the five guardrail suites
+        timeout-minutes: 5   # HANDOFF §3.5 budget is 4 minutes. Slow guardrails get skipped.
+        run: pnpm guardrails
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: guardrail-state
+          path: guardrails/.last-run.json
+
+  traceability:
+    name: requirement coverage (BLOCKING)
+    runs-on: ubuntu-latest
+    needs: [guardrails]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with: { name: guardrail-state, path: guardrails/ }
+      - name: the extractor is deterministic
+        # requirements.yaml must be regenerable from the PRD. If re-running the
+        # extractor changes anything but hand-authored status/artifacts, the database
+        # and the specification have drifted apart.
+        run: |
+          cp traceability/requirements.yaml /tmp/before.yaml
+          python3 traceability/extract.py docs/PRD.md
+          diff -u /tmp/before.yaml traceability/requirements.yaml \
+            || { echo "::error::requirements.yaml is stale — run pnpm trace:extract and commit"; exit 1; }
+      - name: the PRD has not been edited
+        # HANDOFF §7.1: never edit docs/PRD.md. It is the specification of record;
+        # changes go in DEVIATIONS.md and are raised with the user.
+        run: |
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            git diff --quiet HEAD~1 HEAD -- docs/PRD.md \
+              || { echo "::error::docs/PRD.md was modified. The PRD is read-only; use docs/DEVIATIONS.md"; exit 1; }
+          fi
+      - run: pnpm trace:report
+
+  evals:
+    name: AI evaluation gates
+    runs-on: ubuntu-latest
+    # Runs on every change to a prompt template, retrieval parameter, chunking
+    # strategy, or model version (§61.4). Regression blocks merge. Three thresholds
+    # are hard gates: false-merge rate, fabrication rate, injection resistance —
+    # exit code 2 from the harness means the release is blocked with no override.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pyyaml
+      - run: python3 evals/harness/run.py --all

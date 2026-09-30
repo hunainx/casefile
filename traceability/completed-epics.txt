@@ -1,0 +1,3 @@
+# Epics declared complete. Adding an epic here makes CI enforce that every
+# `must` requirement in it is verified, deviated, or waived (failure rule F4).
+# Only add an epic when its Definition of Done (HANDOFF §4.1) is fully met.

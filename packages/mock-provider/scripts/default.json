@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "scenarios": [
+    {
+      "id": "injection_probe",
+      "match": {
+        "hasInjection": true
+      },
+      "behavior": {
+        "type": "injection_compliant",
+        "injectedResponse": "INJECTION_COMPLIANT: Executed injected command from document payload."
+      }
+    },
+    {
+      "id": "malformed_request",
+      "match": {
+        "promptIncludes": ["trigger:malformed"]
+      },
+      "behavior": {
+        "type": "malformed",
+        "rawContent": "{\"invalid_json\": [unterminated"
+      }
+    },
+    {
+      "id": "hallucination_request",
+      "match": {
+        "promptIncludes": ["trigger:hallucination"]
+      },
+      "behavior": {
+        "type": "hallucinated_citations",
+        "citations": [
+          {
+            "citation_uri": "dtz://inv/inv_phantom/src/src_phantom/art/art_phantom/blk/blk_0?c=0-100&h=000000",
+            "snippet": "Phantom citation text that exists nowhere in evidence."
+          }
+        ]
+      }
+    },
+    {
+      "id": "unauthorized_tool",
+      "match": {
+        "promptIncludes": ["trigger:unauthorized_tool"]
+      },
+      "behavior": {
+        "type": "unauthorized_tool_call",
+        "unauthorizedTool": {
+          "name": "system.secret_export",
+          "arguments": { "target": "external_exfil" }
+        }
+      }
+    },
+    {
+      "id": "error_trigger",
+      "match": {
+        "promptIncludes": ["trigger:error"]
+      },
+      "behavior": {
+        "type": "error",
+        "error": {
+          "message": "Simulated upstream 503 Service Unavailable",
+          "code": "UPSTREAM_UNAVAILABLE",
+          "status": 503
+        }
+      }
+    },
+    {
+      "id": "timeout_trigger",
+      "match": {
+        "promptIncludes": ["trigger:timeout"]
+      },
+      "behavior": {
+        "type": "timeout",
+        "error": {
+          "message": "Simulated provider request timeout"
+        }
+      }
+    }
+  ],
+  "defaultBehavior": {
+    "type": "valid"
+  }
+}

@@ -1,0 +1,1969 @@
+- id: REQ-M-RBAC-001
+  prd_section: "38.2"
+  prd_anchor: Investigation role override
+  statement: >
+    When a user accesses an investigation, their investigation-level role
+    assignment must override their workspace-level role for authorization
+    evaluation within that investigation scope.
+  type: rbac
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/policy/test/policy.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-002
+  prd_section: "38.2"
+  prd_anchor: Auditor role content isolation
+  statement: >
+    The auditor role must have read-only access to audit events, system logs,
+    and workspace metadata, and must be strictly denied read access to
+    investigation content (including sources, documents, evidence, assertions,
+    and findings).
+  type: rbac
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/policy/test/policy.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-003
+  prd_section: "38.3"
+  prd_anchor: Org admin break-glass
+  statement: >
+    An org_admin user must not have ambient read access to investigations;
+    accessing an investigation requires an explicit break-glass action that
+    creates an audit event and notifies workspace and investigation
+    administrators before granting access.
+  type: rbac
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/security-stories.integration.test.ts
+      - packages/policy/test/policy.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-004
+  prd_section: "38.4"
+  prd_anchor: Restricted evidence ACL
+  statement: >
+    Evidence marked as restricted must only be visible to and returned in
+    queries for explicitly named investigation members, hiding it from all other
+    members of the workspace and investigation.
+  type: security
+  epic: E2
+  priority: must
+  verification:
+    method:
+      - unit_test
+      - integration_test
+    artifacts:
+      - packages/policy/test/policy.unit.test.ts
+      - apps/api/test/investigation-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-005
+  prd_section: "38.4"
+  prd_anchor: Sealed findings ACL
+  statement: >
+    Findings marked as sealed must only be visible to and returned in queries
+    for the investigation lead and named reviewers until an explicit unsealing
+    action is executed.
+  type: security
+  epic: E11
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts: []
+  status: not_started
+  verified_at: null
+  notes: ""
+- id: REQ-M-RBAC-006
+  prd_section: "38.4"
+  prd_anchor: Ethical wall override
+  statement: >
+    An ethical wall configuration blocking a user or group from an investigation
+    must immediately deny all access to that investigation and its contents,
+    strictly overriding all workspace-level, organization-level, or object-level
+    allow permissions.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+      - unit_test
+    artifacts:
+      - apps/api/test/acceptance.integration.test.ts
+      - packages/policy/test/policy.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-007
+  prd_section: "38.4"
+  prd_anchor: Permission resolution precedence
+  statement: >
+    Authorization evaluation must strictly follow the precedence hierarchy:
+    explicit deny (ethical wall) → object ACL → investigation role → workspace
+    role → organization role, where an explicit deny at any level immediately
+    terminates evaluation with denial.
+  type: rbac
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/policy/test/policy.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-008
+  prd_section: "38.5"
+  prd_anchor: Tenant isolation storage prefix
+  statement: >
+    All object storage paths must be prefixed with the tenant_id, encrypted with
+    per-tenant KMS keys, and storage access policies must reject any
+    cross-tenant prefix access attempts.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/storage/test/storage.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-009
+  prd_section: "38.5"
+  prd_anchor: Tenant isolation cache keys
+  statement: >
+    All cache keys in shared caching infrastructure must include the tenant_id
+    prefix to prevent cross-tenant cache access and data contamination.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - guardrails/tenancy.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-010
+  prd_section: "38.5"
+  prd_anchor: Tenant isolation queue tagging
+  statement: >
+    All asynchronous background messages and queue payloads must carry a
+    tenant_id tag, and worker dispatchers must enforce per-tenant concurrency
+    isolation limits.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-RBAC-011
+  prd_section: "38.6"
+  prd_anchor: Cross-investigation entity sharing default
+  statement: >
+    Cross-investigation entity sharing must be disabled by default; when
+    explicitly enabled at workspace level, only entity identity anchors and
+    workspace-level identifiers are shared.
+  type: behavior
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-RBAC-012
+  prd_section: "38.6"
+  prd_anchor: Ethical wall mode UI suppression
+  statement: >
+    When workspace policy ethical_wall_mode is enabled, all cross-investigation
+    entity sharing is disabled and the API and UI must suppress all indicators,
+    counts, or signals that an entity exists in another investigation.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-AUDIT-001
+  prd_section: "39.2"
+  prd_anchor: Server authoritative audit timestamp
+  statement: >
+    Audit event timestamps must be generated server-side from an authoritative
+    clock and must reject any client-supplied timestamp values.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/audit/test/audit.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-002
+  prd_section: "39.2"
+  prd_anchor: Mandatory rationale on overrides
+  statement: >
+    Audit events for validation, adjudication, and override actions must reject
+    transactions that do not provide a non-empty rationale string.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - guardrails/audit-integrity.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-003
+  prd_section: "39.2"
+  prd_anchor: State diff JSONPatch logging
+  statement: >
+    State-changing audit events must capture pre-change and post-change object
+    states formatted as RFC 6902 JSONPatch diff structures in before and after
+    fields.
+  type: behavior
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+      - integration_test
+    artifacts:
+      - packages/audit/test/audit.unit.test.ts
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-004
+  prd_section: "39.2"
+  prd_anchor: AI actor audit attribution
+  statement: >
+    When AI operates on behalf of a user, the audit event actor must record
+    actor.type as 'ai', actor.on_behalf_of with the initiating user's ID, and
+    ai_involvement containing model, version, context_manifest_id, and
+    prompt_template_hash.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/audit/test/audit.unit.test.ts
+      - packages/contracts/test/contracts.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-005
+  prd_section: "39.2"
+  prd_anchor: IP address 30-day hashing
+  statement: >
+    Client IP addresses recorded in audit events must be automatically replaced
+    with irreversible cryptographic hashes after 30 days of retention.
+  type: security
+  epic: E11
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts: []
+  status: not_started
+  verified_at: null
+  notes: Blocked by audit retention lifecycle and log archiving jobs; unblocked by E11
+- id: REQ-M-AUDIT-006
+  prd_section: "39.3"
+  prd_anchor: Permission denial audit without enumeration
+  statement: >
+    Every authorization denial must emit an audit event with outcome 'denied',
+    actor, attempted action, and denial reason, while the API response does not
+    reveal whether the target object exists.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/policy/test/policy.integration.test.ts
+      - apps/api/test/acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-007
+  prd_section: "39.4"
+  prd_anchor: Daily audit chain integrity check
+  statement: >
+    An automated daily background job must verify the hash chain integrity of
+    all tenant audit logs and immediately generate a critical security alert
+    upon detecting any broken link or hash mismatch.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/audit/test/audit.integration.test.ts
+      - guardrails/audit-integrity.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-008
+  prd_section: "39.4"
+  prd_anchor: Audit log immutability grants
+  statement: >
+    Database privilege grants on the audit_events table must be restricted to
+    INSERT and SELECT only, with UPDATE and DELETE permissions strictly denied
+    to all application roles and administrative users.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - db_constraint
+    artifacts:
+      - packages/db/migrations/0003_audit.sql
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AUDIT-009
+  prd_section: "39.5"
+  prd_anchor: Audit log export auditing
+  statement: >
+    Exporting audit events to CSV or JSON formats must itself emit an audit
+    event recording the exporting user, filter parameters, record count, and
+    timestamp.
+  type: behavior
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-001
+  prd_section: "40.1"
+  prd_anchor: Argon2id password hashing
+  statement: >
+    User passwords must be hashed using the Argon2id algorithm with memory-hard
+    parameters, and plaintext passwords must never be logged or persisted.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-002
+  prd_section: "40.1"
+  prd_anchor: Mandatory MFA for privileged roles
+  statement: >
+    Multi-factor authentication (TOTP or WebAuthn/passkey) must be enforced for
+    all users assigned roles above viewer before accessing workspace resources.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-003
+  prd_section: "40.1"
+  prd_anchor: JWT session lifecycle and refresh reuse detection
+  statement: >
+    Authentication tokens must use 15-minute JWT access tokens with rotating
+    refresh tokens that detect token reuse and immediately invalidate all tokens
+    in the compromised session family.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-004
+  prd_section: "40.1"
+  prd_anchor: Session idle and absolute timeout
+  statement: >
+    User sessions must expire and require re-authentication upon reaching the
+    configurable idle timeout (default 30 minutes) or absolute timeout (default
+    12 hours).
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-005
+  prd_section: "40.1"
+  prd_anchor: Brute force progressive delay and lockout
+  statement: >
+    Authentication endpoints must enforce progressive response delays and
+    temporary account lockout after consecutive failed authentication attempts.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-006
+  prd_section: "40.2"
+  prd_anchor: Centralized deny-by-default middleware
+  statement: >
+    Authorization checks must be executed centrally in middleware and data
+    access layers following a strict fail-closed (deny-by-default) evaluation
+    pipeline without scattered handler logic.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/db/src/tenant.ts
+      - packages/db/test/tenancy.integration.test.ts
+      - guardrails/tenancy.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-SEC-007
+  prd_section: "40.3"
+  prd_anchor: Field-level encryption for sensitive attributes
+  statement: >
+    Highly sensitive extracted entity attributes (including government
+    identification numbers, financial account numbers, and biometric
+    identifiers) must be encrypted at the field level with separate
+    cryptographic keys before database storage.
+  type: security
+  epic: E4
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/assertions.integration.test.ts
+      - apps/api/test/epistemic-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-008
+  prd_section: "40.3"
+  prd_anchor: Internal service mTLS
+  statement: >
+    All internal network communication between Casefile services (API, workers,
+    and databases) must enforce mutual TLS (mTLS) with TLS 1.3.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-009
+  prd_section: "40.5"
+  prd_anchor: Strict query parameterization
+  statement: >
+    All database queries must use strictly parameterized queries or prepared
+    statements; dynamic string concatenation or interpolation of SQL statements
+    is prohibited.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - apps/api/test/architecture.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-SEC-010
+  prd_section: "40.5"
+  prd_anchor: Uploaded file serving isolation
+  statement: >
+    Uploaded source documents and artifacts must be served from a dedicated
+    isolated domain with Content-Disposition: attachment headers and script
+    execution disabled.
+  type: security
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/sources.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-SEC-011
+  prd_section: "40.5"
+  prd_anchor: SSRF prevention on external fetches
+  statement: >
+    All external connector requests and URL fetches must validate target IP
+    addresses against private, loopback, and cloud metadata ranges
+    (169.254.169.254) with DNS rebinding protection.
+  type: security
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/ingestion-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-012
+  prd_section: "40.5"
+  prd_anchor: Tiered rate limiting
+  statement: >
+    The API gateway must enforce rate limiting per user, per IP, and per tenant,
+    applying strict rate limit ceilings on AI query, search, and export
+    endpoints.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-013
+  prd_section: "40.6"
+  prd_anchor: Parser sandbox egress prohibition
+  statement: >
+    Document parsing sandboxes must run in isolated container environments
+    configured with zero outbound network egress capabilities.
+  type: invariant
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - arch_test
+    artifacts:
+      - apps/api/test/ingestion-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-SEC-014
+  prd_section: "40.7"
+  prd_anchor: Dual-party break-glass access
+  statement: >
+    Administrative break-glass access to production tenant data must be
+    time-boxed, require second-person approval, record full session logs, and
+    notify affected customer administrators.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/acceptance.integration.test.ts
+      - apps/api/test/security-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-SEC-015
+  prd_section: "40.8"
+  prd_anchor: Certification claim prohibition
+  statement: >
+    The system and user-facing artifacts must state design intent only for
+    compliance standards (SOC 2 Type II, ISO 27001) and must never claim active
+    certification until formal external audit reports are completed.
+  type: behavior
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - manual
+    artifacts:
+      - docs/DECISIONS.md
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-001
+  prd_section: "45.1"
+  prd_anchor: Opaque cursor pagination
+  statement: >
+    All API list endpoints returning collections must use opaque cursor-based
+    pagination with limit and cursor query parameters rather than offset-based
+    pagination.
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-002
+  prd_section: "45.1"
+  prd_anchor: Idempotency key enforcement
+  statement: >
+    All mutating API endpoints (POST, PATCH) must accept and enforce the
+    Idempotency-Key HTTP header, caching and returning identical responses for
+    retried duplicate requests.
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-003
+  prd_section: "45.1"
+  prd_anchor: RFC 9457 problem details error format
+  statement: >
+    All API error responses must adhere strictly to the RFC 9457 Problem Details
+    specification, returning JSON objects with type, title, status, detail,
+    instance, and request_id fields.
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+      - integration_test
+    artifacts:
+      - packages/contracts/test/contracts.unit.test.ts
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-004
+  prd_section: "45.4"
+  prd_anchor: Machine assertion grounding rejection
+  statement: >
+    An API request attempting to create an assertion by a machine or model
+    asserter without at least one resolvable evidence locator must be rejected
+    with HTTP 422 and error type
+    https://docs.casefile.com/errors/grounding-required.
+  type: invariant
+  epic: E4
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/assertions.integration.test.ts
+      - apps/api/test/epistemic-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-EVT-001
+  prd_section: "46.1"
+  prd_anchor: Transactional outbox pattern
+  statement: >
+    Domain events must be inserted into the outbox table within the same
+    database transaction as the business entity state mutation to guarantee
+    reliable, at-least-once asynchronous event publishing.
+  type: event
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/db/migrations/0004_outbox.sql
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-EVT-002
+  prd_section: "46.1"
+  prd_anchor: Canonical event payload envelope
+  statement: >
+    Every emitted domain event must conform to the canonical event envelope
+    containing event_id (ULID), event_type, version, tenant_id, workspace_id,
+    investigation_id, occurred_at, actor, payload, correlation_id, and
+    causation_id.
+  type: event
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-EVT-003
+  prd_section: "46.1"
+  prd_anchor: Idempotent event consumers
+  statement: >
+    All background event handlers and message consumers must implement
+    idempotency keyed on the event_id to prevent duplicate processing of
+    re-delivered events.
+  type: event
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-EVT-004
+  prd_section: "46.3"
+  prd_anchor: Evidence withdrawal reactive cascade
+  statement: >
+    When an EvidenceWithdrawn event occurs, the system must trigger confidence
+    recomputation on dependent assertions, emit AssertionStateChanged for
+    degraded assertions, flag dependent findings as evidence_broken, notify
+    authors and approvers, and mark published reports containing broken findings
+    for review.
+  type: invariant
+  epic: E9
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts: []
+  status: not_started
+  verified_at: null
+  notes: ""
+- id: REQ-M-EVT-005
+  prd_section: "46.3"
+  prd_anchor: Source admitted reactive cascade
+  statement: >
+    When a SourceAdmitted event occurs, the processing pipeline must
+    automatically execute document extraction, entity discovery, merge candidate
+    regeneration, relationship discovery, correlation analysis for
+    contradictions and corroborations, research gap re-evaluation, investigation
+    memory Tier 2 update, brief regeneration, and trigger active saved-search
+    monitors.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/ingestion-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-DB-001
+  prd_section: "59.1"
+  prd_anchor: Standard table audit columns
+  statement: >
+    Every database table must define id UUID PRIMARY KEY, tenant_id UUID NOT
+    NULL, created_at TIMESTAMPTZ NOT NULL (UTC), updated_at TIMESTAMPTZ NOT NULL
+    (UTC), and created_by UUID columns.
+  type: schema
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - db_constraint
+    artifacts:
+      - packages/db/migrations/0002_tenancy_identity.sql
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-DB-002
+  prd_section: "59.1"
+  prd_anchor: Soft deletion convention
+  statement: >
+    All soft-deletable tables must include a deleted_at TIMESTAMPTZ column and
+    default database views/queries must filter out records where deleted_at IS
+    NOT NULL unless explicitly querying tombstoned entities.
+  type: schema
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-DB-003
+  prd_section: "59.1"
+  prd_anchor: Forced row level security policy
+  statement: >
+    Every tenant-scoped table must execute ALTER TABLE <t> FORCE ROW LEVEL
+    SECURITY and define a tenant_isolation policy matching tenant_id to
+    current_setting('app.tenant_id', true)::uuid.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - db_constraint
+    artifacts:
+      - packages/db/test/tenancy.integration.test.ts
+      - guardrails/tenancy.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-DB-004
+  prd_section: "59.2"
+  prd_anchor: Assertion asserter epistemic CHECK constraint
+  statement: >
+    The assertions table must enforce a database CHECK constraint ensuring that
+    asserter_type IN ('model', 'deterministic') strictly forbids epistemic_state
+    IN ('Verified', 'Refuted').
+  type: invariant
+  epic: E4
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - guardrails/epistemic-authority.spec.ts
+      - apps/api/test/epistemic-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-DB-005
+  prd_section: "59.2"
+  prd_anchor: Assertion verification human reviewer CHECK constraint
+  statement: >
+    The assertions table must enforce a database CHECK constraint ensuring that
+    any row where epistemic_state IN ('Verified', 'Refuted') has a non-null
+    reviewed_by UUID.
+  type: invariant
+  epic: E4
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - guardrails/epistemic-authority.spec.ts
+      - apps/api/test/epistemic-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-DB-006
+  prd_section: "59.2"
+  prd_anchor: Audit events monthly partition
+  statement: >
+    The audit_events database table must be partitioned by monthly date ranges
+    on the timestamp column.
+  type: schema
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-DB-007
+  prd_section: "59.2"
+  prd_anchor: Job deterministic deduplication constraint
+  statement: >
+    The jobs table must enforce a UNIQUE(job_type, input_ref, transform_version)
+    database constraint to prevent duplicate concurrent execution of
+    deterministic background jobs.
+  type: schema
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - db_constraint
+    artifacts:
+      - packages/db/migrations/0012_sources_and_ingestion.sql
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-DB-008
+  prd_section: "59.2"
+  prd_anchor: Source workspace sha256 deduplication index
+  statement: >
+    The sources table must enforce content-addressing and deduplication via an
+    index on (workspace_id, sha256).
+  type: schema
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - db_constraint
+    artifacts:
+      - packages/db/migrations/0012_sources_and_ingestion.sql
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-RBAC-013
+  prd_section: "38.2"
+  prd_anchor: Investigation role permission replacement
+  statement: >
+    An investigation role, where assigned, replaces the member's workspace role
+    for all permissions evaluated inside that investigation, mapping 'owner' to
+    lead_inv permissions plus exclusive ownership transfer and archival rights
+    (D48).
+  type: rbac
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/policy/src/evaluator.ts
+      - packages/policy/test/policy.unit.test.ts
+      - packages/policy/test/matrix.fixture.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-DEC-D52
+  prd_section: "39.4"
+  prd_anchor: Audit sequence, chain heads, and monotonic IDs
+  statement: >
+    Audit events must carry a contiguous per-tenant sequence (seq BIGINT NOT
+    NULL) and ULID id, with chain termination points recorded in
+    audit_chain_heads to enable deterministic tail-truncation detection.
+  type: decision
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - db_constraint
+      - unit_test
+      - integration_test
+    artifacts:
+      - packages/db/migrations/0006_audit_sequence.sql
+      - packages/audit/src/writer.ts
+      - packages/audit/src/verifier.ts
+      - packages/audit/test/audit.unit.test.ts
+      - packages/audit/test/audit.integration.test.ts
+      - guardrails/audit-integrity.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-DB-009
+  prd_section: "59.2"
+  prd_anchor: Investigation members role enum
+  statement: >
+    The investigation_members.role column must be a Postgres ENUM of exactly
+    ('owner', 'lead', 'investigator', 'reviewer', 'contributor', 'viewer'), with
+    a database constraint enforcing exactly one owner per investigation (D48).
+  type: schema
+  epic: E2
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/db/migrations/0011_investigations.sql
+      - apps/api/test/investigation-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-005
+  prd_section: "45.2"
+  prd_anchor: Assertion endpoints and immutability
+  statement: >
+    The API must provide POST /v1/investigations/{id}/assertions, GET
+    /v1/investigations/{id}/assertions, and GET /v1/assertions/{id}, and must
+    strictly prohibit PATCH and DELETE methods on assertion resources (D49,
+    DEV-006).
+  type: api
+  epic: E4
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/assertions.integration.test.ts
+      - apps/api/test/epistemic-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-006
+  prd_section: "45.2"
+  prd_anchor: Assertion supersession via POST
+  statement: >
+    Assertion supersession must be performed via POST
+    /v1/investigations/{id}/assertions containing a supersedes field referencing
+    the prior assertion ID, routing through the Assertion Service write path
+    without mutating the existing row (D49, DEV-006).
+  type: invariant
+  epic: E4
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/assertions.integration.test.ts
+      - apps/api/test/epistemic-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-AUDIT-010
+  prd_section: "39.2"
+  prd_anchor: Audit IP HMAC-SHA256 pepper rotation
+  statement: >
+    Audit event client IP addresses for events older than 30 days must be
+    anonymized using HMAC-SHA256 with an annually rotated KMS-managed pepper,
+    rendering archived windows irreversible upon pepper destruction while
+    maintaining incident correlation within the active window (D50).
+  type: security
+  epic: E11
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts: []
+  status: not_started
+  verified_at: null
+  notes: D50
+- id: REQ-M-SEC-016
+  prd_section: "40.1"
+  prd_anchor: Step-up re-authentication for high-risk operations
+  statement: >
+    High-risk actions (including permissions marked ⚠ in §38.3, data export,
+    report publication, source purge, and permission changes) must require a
+    fresh step-up MFA assertion no older than 5 minutes recorded in the audit
+    event (D51).
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts: []
+  status: not_started
+  verified_at: null
+  notes: D51
+- id: REQ-M-DB-010
+  prd_section: "59.2"
+  prd_anchor: Organization tenant root constraint
+  statement: >
+    The organizations table must enforce a database CHECK constraint ensuring
+    that tenant_id = id, guaranteeing that every organization is its own tenant
+    root.
+  type: invariant
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - db_constraint
+      - integration_test
+    artifacts:
+      - packages/db/migrations/0005_org_tenant_root.sql
+      - packages/db/test/tenancy.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-007
+  prd_section: "45.3"
+  prd_anchor: Shared schema contract generation
+  statement: >
+    Zod schemas must serve as the single source of truth for object models
+    across API and worker tiers, generating OpenAPI 3.1 and JSON schema
+    specifications, with automated contract snapshot testing to prevent silent
+    drift (D32).
+  type: schema
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/contracts/src/openapi.ts
+      - packages/contracts/openapi.json
+      - packages/contracts/test/contracts.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-STORE-001
+  prd_section: "40.6"
+  prd_anchor: ObjectStore adapter and tenant-scoped keys
+  statement: >
+    Object storage access must be mediated via an ObjectStore adapter supporting
+    branded TenantScopedKey, ensuring offline execution with in-memory double in
+    tests and Google Cloud Storage in deployed environments, with no deletion
+    method to enforce T7 evidence immutability (D43).
+  type: tool
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/storage/src/types.ts
+      - packages/storage/src/memory.ts
+      - packages/storage/src/gcs.ts
+      - packages/storage/test/storage.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-STORE-002
+  prd_section: "40.6"
+  prd_anchor: Content-addressed source storage layout
+  statement: >
+    Source storage keys must be content-addressed by SHA-256
+    (<tenant_id>/<investigation_id>/sources/<sha256>), ensuring byte-identical
+    upload deduplication falls out of the storage layout (AC-ING-02).
+  type: behavior
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/storage/src/types.ts
+      - packages/storage/test/storage.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-AI-001
+  prd_section: "56.7"
+  prd_anchor: Deterministic mock AI model provider
+  statement: >
+    The AI model provider must be mocked offline via a scriptable deterministic
+    provider capable of returning valid schema-compliant output, malformed
+    output, hallucinated citations, compliance with prompt injections,
+    unauthorized tool calls, and degraded error/timeout modes (D36).
+  type: tool
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - unit_test
+    artifacts:
+      - packages/mock-provider/src/provider.ts
+      - packages/mock-provider/scripts/default.json
+      - packages/mock-provider/test/mock-provider.unit.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-008
+  prd_section: "55.1"
+  prd_anchor: POST /v1/auth/register
+  statement: >
+    `POST /v1/auth/register` creates a root organization, administrative user,
+    initial credentials, and default workspace inside a new tenant (AUTH-01,
+    DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-009
+  prd_section: "40.1"
+  prd_anchor: POST /v1/auth/logout
+  statement: >
+    `POST /v1/auth/logout` explicitly terminates the caller's active session and
+    marks the session revoked in the database (AUTH-06, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-010
+  prd_section: "40.1"
+  prd_anchor: POST /v1/auth/mfa/setup
+  statement: >
+    `POST /v1/auth/mfa/setup` generates a cryptographically secure TOTP secret
+    and provisioning URI for multi-factor authentication (AUTH-02, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-011
+  prd_section: "40.1"
+  prd_anchor: POST /v1/auth/mfa/verify
+  statement: >
+    `POST /v1/auth/mfa/verify` validates a time-based one-time password to
+    complete MFA activation or secondary login challenge (AUTH-02, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-API-012
+  prd_section: "40.1"
+  prd_anchor: POST /v1/auth/step-up
+  statement: >
+    `POST /v1/auth/step-up` accepts a fresh MFA assertion and issues a step-up
+    token valid for 5 minutes for high-risk operations (D51, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-013
+  prd_section: "55.1"
+  prd_anchor: GET /v1/auth/sessions
+  statement: >
+    `GET /v1/auth/sessions` lists all active sessions and device metadata for
+    the authenticated user (AUTH-05, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-014
+  prd_section: "55.1"
+  prd_anchor: DELETE /v1/auth/sessions/:id
+  statement: >
+    `DELETE /v1/auth/sessions/:id` remotely revokes an active session belonging
+    to the user (AUTH-06, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-015
+  prd_section: "55.1"
+  prd_anchor: POST /v1/auth/password-reset/request
+  statement: >
+    `POST /v1/auth/password-reset/request` initiates a password reset flow with
+    a single-use, 15-minute expiring token (AUTH-07, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-016
+  prd_section: "55.1"
+  prd_anchor: POST /v1/auth/password-reset/confirm
+  statement: >
+    `POST /v1/auth/password-reset/confirm` confirms password reset with a valid
+    token and immediately revokes all active user sessions (AUTH-07, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-017
+  prd_section: "55.1"
+  prd_anchor: GET /v1/auth/history
+  statement: >
+    `GET /v1/auth/history` returns the historical sign-in activity log with IP
+    address and location metadata for the user (AUTH-10, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-018
+  prd_section: "45.2"
+  prd_anchor: GET /v1/workspaces/:id
+  statement: >
+    `GET /v1/workspaces/:id` returns metadata for a single workspace by ID with
+    strict tenant isolation (WS-01, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/api.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-019
+  prd_section: "55.2"
+  prd_anchor: DELETE /v1/workspaces/:id/members/:memberId
+  statement: >
+    `DELETE /v1/workspaces/:id/members/:memberId` removes a member and revokes
+    their workspace access immediately (WS-03, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-API-020
+  prd_section: "38.4"
+  prd_anchor: GET & POST /v1/workspaces/:id/ethical-walls
+  statement: >
+    `GET & POST /v1/workspaces/:id/ethical-walls` creates and retrieves matter
+    isolation ethical walls (WS-07, DEV-007).
+  type: api
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/user-stories.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-08-31 by verification audit — was marked verified by bulk assignment, never checked against its own statement. Re-verify one at a time."
+- id: REQ-M-FMT-001
+  prd_section: "10.2"
+  prd_anchor: Format support matrix - PDF (text layer)
+  statement: >
+    PDF (text layer): Structure-aware extraction with page, block and span locators.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/live-ingest.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-FMT-002
+  prd_section: "5.2"
+  prd_anchor: Stage 3 — NORMALIZATION
+  statement: >
+    Produces a structure-aware document tree from PDF text layer where every content block
+    carries a 1-indexed page number and bounding box coordinates (bbox).
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/live-ingest.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-FMT-003
+  prd_section: "11.3"
+  prd_anchor: Chunking - structure-first
+  statement: >
+    Structure-first chunking preserves locator ranges and records block_ids array referencing
+    the originating content_blocks.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/live-ingest.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-CLI-001
+  prd_section: "45.1"
+  prd_anchor: Tenant Provisioning & Idempotency
+  statement: >
+    Provisions tenant, workspace, user, and investigation idempotently from CLI arguments, returning
+    identical IDs on repeat runs and emitting workspace and investigation creation audit events.
+  type: behavior
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - tools/ingest-cli/test/ingest-cli.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-CLI-002
+  prd_section: "10.1"
+  prd_anchor: CLI Ingestion Logging & Progression
+  statement: >
+    CLI ingests document directories outputting per-file progress lines with filename, byte size,
+    SHA-256 hash prefix, and status, terminating with a formatted batch summary.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - tools/ingest-cli/test/ingest-cli.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-CLI-003
+  prd_section: "10.3"
+  prd_anchor: Resumable Ingestion & Deduplication
+  statement: >
+    Batch ingestion deduplicates files by SHA-256 hash against existing workspace sources,
+    skipping already ingested files without duplicate storage or database rows.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - tools/ingest-cli/test/ingest-cli.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-CLI-004
+  prd_section: "10.4"
+  prd_anchor: Batch Error Fault Tolerance
+  statement: >
+    Batch ingestion loop is non-aborting on per-file errors, logging failures, continuing
+    processing of remaining files, and incrementing failed counter in summary.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - tools/ingest-cli/test/ingest-cli.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-CLI-005
+  prd_section: "10.2"
+  prd_anchor: Unsupported Format Admission
+  statement: >
+    Admits unsupported file formats as stored_unparsed, uploading raw bytes to object storage
+    and recording cryptographic source record without rejection.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - tools/ingest-cli/test/ingest-cli.integration.test.ts
+  status: verified
+  verified_at: 2026-09-01T00:00:00Z
+  notes: "verified against .xlsx, .docx, .png, and .dat binaries, asserting status stored_unparsed and GCS object presence. Verified by 'REQ-M-CLI-002 & REQ-M-CLI-005: ingests directory, outputs per-file status, and admits unsupported files as stored_unparsed'."
+- id: REQ-M-CLI-006
+  prd_section: "10.5"
+  prd_anchor: Status Verification & Integrity
+  statement: >
+    Reports investigation source counts, content blocks, chunks, verifies tenant cryptographic
+    audit chain head, and validates source object presence in storage bucket.
+  type: behavior
+  epic: E3
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - tools/ingest-cli/test/ingest-cli.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "RESET 2026-09-02 by independent verification audit — sample of 15 found only 1 held up (REQ-M-CLI-005). Re-verify one at a time."
+- id: REQ-M-SRCH-001
+  prd_section: "12.4"
+  prd_anchor: Cross-Encoder Relevance Signal Computation
+  statement: >
+    Compute cross-encoder re-ranking relevance scores dynamically for candidate search
+    chunks rather than reporting uncomputed constants.
+  type: story
+  epic: E6
+  priority: should
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/search-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by lack of dedicated cross-encoder model deployment."
+- id: REQ-M-SRCH-002
+  prd_section: "12.4"
+  prd_anchor: Entity Overlap Signal Computation
+  statement: >
+    Compute entity overlap score between query entities and extracted entity mentions
+    in candidate chunks.
+  type: story
+  epic: E6
+  priority: should
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/search-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by chunk entity mention extraction linking in search pipeline."
+- id: REQ-M-SRCH-003
+  prd_section: "12.4"
+  prd_anchor: Recency or Period Fit Signal Computation
+  statement: >
+    Compute recency and chronological period fit scores based on document dates
+    relative to investigation time window.
+  type: story
+  epic: E6
+  priority: should
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/search-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by temporal period resolution service integration."
+- id: REQ-M-SRCH-004
+  prd_section: "12.4"
+  prd_anchor: Question Alignment Signal Computation
+  statement: >
+    Compute question alignment scores between candidate chunks and open investigation questions.
+  type: story
+  epic: E6
+  priority: should
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/search-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by investigation question semantic alignment evaluation."
+- id: REQ-M-SRCH-005
+  prd_section: "12.4"
+  prd_anchor: Novelty Signal Computation
+  statement: >
+    Compute novelty score to down-rank information redundant with already-reviewed evidence.
+  type: story
+  epic: E6
+  priority: should
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/search-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by user review history tracking in search context."
+- id: REQ-M-SRCH-006
+  prd_section: "12.4"
+  prd_anchor: Interaction Signal Computation
+  statement: >
+    Compute investigator interaction signals (bookmarks, pins, citations) to modulate
+    search candidate ranking.
+  type: story
+  epic: E6
+  priority: should
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - apps/api/test/search-acceptance.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by telemetry and interaction feedback loop implementation."
+- id: REQ-M-SRCH-007
+  prd_section: "12.4"
+  prd_anchor: Vector Retrieval Pipeline & Embedding Storage
+  statement: >
+    Generate real embeddings at chunk ingest and query time, store vectors in dedicated
+    pgvector column with ANN index, and perform true hybrid fusion.
+  type: story
+  epic: E6
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - guardrails/ranking-honesty.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "Blocked by embedding provider integration, vector column migrations, and HNSW index."
+- id: REQ-M-MCP-001
+  prd_section: "29.2"
+  prd_anchor: MCP Tool matter_status
+  statement: >
+    Expose read-only matter_status tool returning investigation metadata, source status counts,
+    vector retrieval availability (false), and uncomputed search signals.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-002
+  prd_section: "29.2"
+  prd_anchor: MCP Tool list_investigations
+  statement: >
+    Expose read-only list_investigations tool listing all investigations belonging to the matter tenant.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-003
+  prd_section: "29.2"
+  prd_anchor: MCP Tool get_investigation
+  statement: >
+    Expose read-only get_investigation tool retrieving detailed investigation metadata and legal hold status.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-004
+  prd_section: "29.2"
+  prd_anchor: MCP Tool list_documents
+  statement: >
+    Expose read-only list_documents tool listing ingested source documents scoped by matter investigation.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-005
+  prd_section: "29.2"
+  prd_anchor: MCP Tool get_source
+  statement: >
+    Expose read-only get_source tool retrieving source document metadata, content document structure, and content blocks.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-006
+  prd_section: "29.2"
+  prd_anchor: MCP Tool get_document_page
+  statement: >
+    Expose read-only get_document_page tool retrieving page text with bounding-box coordinate locators, erroring on non-existent pages.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-007
+  prd_section: "29.2"
+  prd_anchor: MCP Tool get_download_link
+  statement: >
+    Expose read-only get_download_link tool generating time-limited signed Google Cloud Storage download URLs for sources.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-008
+  prd_section: "29.2"
+  prd_anchor: MCP Tool get_evidence
+  statement: >
+    Expose read-only get_evidence tool retrieving verified evidence record with cited text span, cryptographic span hash, and locator.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-009
+  prd_section: "29.2"
+  prd_anchor: MCP Tool search
+  statement: >
+    Expose read-only search tool executing lexical retrieval with fuzzy OCR matching, alias expansion, transparent signal explanations, and uncomputed signal disclosure.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-010
+  prd_section: "60.1"
+  prd_anchor: MCP Authentication Enforcement
+  statement: >
+    No MCP method reaches a handler without a valid OAuth access token issued by this deployment (aud = MCP_PUBLIC_URL, tid = MATTER_TENANT_ID, scope casefile.read), checked against the database (session and user) on every request, across every route under /mcp and /mcp/. (Until Phase 2B, D73, this was a static MCP_TOKEN.)
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-011
+  prd_section: "60.1"
+  prd_anchor: MCP Matter Deployment Scoping
+  statement: >
+    Tenant and investigation context for MCP operations originate strictly from deployment configuration variables, rejecting caller overrides.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Integration tested in packages/mcp/test/mcp.integration.test.ts"
+- id: REQ-M-MCP-012
+  prd_section: "60.1"
+  prd_anchor: MCP Read-Only Surface Guarantee
+  statement: >
+    The MCP surface is strictly read-only and performs no write, mutate, or delete operations on tenant database or storage state.
+  type: tool
+  epic: E8
+  priority: must
+  verification:
+    method:
+      - integration_test
+    artifacts:
+      - packages/mcp/test/mcp.integration.test.ts
+  status: not_started
+  verified_at: null
+  notes: "Enforced by Decision D61 and tested in packages/mcp/test/mcp.integration.test.ts"
+
+
+
+- id: REQ-M-SEC-017
+  prd_section: "40"
+  prd_anchor: No hardcoded authentication or authorization secret
+  statement: >
+    No authentication or authorization secret (JWT signing key, MCP token, database
+    connection string, API key, password, credential) may have a hardcoded default value
+    in source. A missing secret must fail loudly, never fall back to a literal.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - arch_test
+    artifacts:
+      - guardrails/secret-hygiene.spec.ts
+  status: not_started
+  verified_at: null
+  notes: "Added 2026-09-04 (Fix 7). Until then apps/api/src/auth/crypto.ts fell back to a public literal JWT secret and packages/db/src/client.ts to a literal connection string."
+
+- id: REQ-M-SEC-018
+  prd_section: "40"
+  prd_anchor: Runtime refuses to start without required secrets
+  statement: >
+    The API must refuse to start when any required runtime secret (DATABASE_URL,
+    SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, JWT_SECRET) is unset, exiting
+    non-zero and naming every missing variable, before it listens for requests.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - arch_test
+    artifacts:
+      - guardrails/secret-hygiene.spec.ts
+      - apps/api/src/config/required-secrets.ts
+  status: not_started
+  verified_at: null
+  notes: "Added 2026-09-04 (Fix 7). Boot gate is assertRequiredRuntimeSecrets() called in apps/api/src/server.ts, the Cloud Run entry point."
+
+- id: REQ-M-SEC-019
+  prd_section: "40"
+  prd_anchor: Required runtime secrets provisioned and mounted per matter
+  statement: >
+    Every required runtime secret must be provisioned per matter in Secret Manager and
+    mounted on that matter's Cloud Run service by scripts/deploy-matter.ts; the set the
+    deploy mounts must equal the set the API requires to boot.
+  type: security
+  epic: E1
+  priority: must
+  verification:
+    method:
+      - arch_test
+    artifacts:
+      - guardrails/secret-hygiene.spec.ts
+      - scripts/deploy-matter.ts
+  status: not_started
+  verified_at: null
+  notes: "Added 2026-09-04 (Fix 7). JWT_SECRET was absent from the deploy's --set-secrets for the entire life of the file; see DEV-018 for secrets that are still names only."

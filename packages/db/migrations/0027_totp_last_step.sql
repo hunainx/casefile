@@ -1,0 +1,13 @@
+-- 0027_totp_last_step.sql
+-- MCP sign-in, Phase 2B (D75): a TOTP code is accepted at most once per account.
+--
+-- A TOTP code is valid for one 30-second time step (RFC 6238), and verification accepts the
+-- step before and after as well, so the same code used to work several times over about 90
+-- seconds. totp_last_step records the time step (Unix time / 30) of the last code this account
+-- used; a code is accepted only for a later step. The application sets it with a single
+-- UPDATE ... WHERE totp_last_step IS NULL OR totp_last_step < <step>, so two requests racing
+-- with the same code cannot both succeed.
+--
+-- Additive only: NULL means no code has been used since this migration, and code deployed
+-- before it ignores the column.
+ALTER TABLE auth_credentials ADD COLUMN IF NOT EXISTS totp_last_step BIGINT;

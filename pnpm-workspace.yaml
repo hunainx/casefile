@@ -1,0 +1,9 @@
+packages:
+  - "apps/api"
+  - "apps/web"
+  - "packages/*"
+
+# BIGDATA-3B: pst-extractor 1.12.0 never returned embedded messages (attach method 5), and skipped a
+# message it could not load with only a console line; the patch fixes both (D110).
+patchedDependencies:
+  pst-extractor@1.12.0: patches/pst-extractor@1.12.0.patch

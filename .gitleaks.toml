@@ -1,0 +1,90 @@
+# gitleaks configuration for this repository: gitleaks' default rules, plus the credential formats its defaults
+# (v8.28.0) did not report here. A Supabase personal access token was committed once and went unnoticed (CLEANUP).
+# The same formats are enforced by guardrails/no-shipped-secrets.spec.ts (KEY_FORMATS in guardrails/sensitive-denylist.ts),
+# so `pnpm guardrails` and `gitleaks git` agree.
+#
+#   gitleaks git . --redact          (the whole history)
+#   gitleaks dir . --redact          (the files as they are)
+
+title = "Casefile"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "cf-supabase-access-token"
+description = "Supabase personal access token (account-wide Management API access)"
+regex = '''\bsbp_[0-9a-f]{40}\b'''
+keywords = ["sbp_"]
+
+[[rules]]
+id = "cf-supabase-secret-key"
+description = "Supabase secret API key"
+regex = '''\bsb_secret_[A-Za-z0-9_-]{20,}'''
+keywords = ["sb_secret_"]
+
+[[rules]]
+id = "cf-google-api-key"
+description = "Google API key"
+regex = '''\bAIza[0-9A-Za-z_-]{35}'''
+keywords = ["aiza"]
+
+[[rules]]
+id = "cf-google-oauth-access-token"
+description = "Google OAuth access token"
+regex = '''\bya29\.[0-9A-Za-z_-]{20,}'''
+keywords = ["ya29."]
+
+[[rules]]
+id = "cf-private-key"
+description = "A private key block"
+regex = '''-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----'''
+keywords = ["private key"]
+
+[[rules]]
+id = "cf-google-service-account-json"
+description = "A Google service account key file"
+regex = '''"type"\s*:\s*"service_account"'''
+keywords = ["service_account"]
+
+[[rules]]
+id = "cf-github-token"
+description = "GitHub token"
+regex = '''\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{50,})'''
+keywords = ["ghp_", "gho_", "ghu_", "ghs_", "ghr_", "github_pat_"]
+
+[[rules]]
+id = "cf-anthropic-api-key"
+description = "Anthropic API key"
+regex = '''\bsk-ant-[A-Za-z0-9_-]{20,}'''
+keywords = ["sk-ant-"]
+
+[[rules]]
+id = "cf-openai-api-key"
+description = "OpenAI API key"
+regex = '''\bsk-(?:proj-)?[A-Za-z0-9]{32,}'''
+keywords = ["sk-"]
+
+[[rules]]
+id = "cf-aws-access-key-id"
+description = "AWS access key id"
+regex = '''\bAKIA[0-9A-Z]{16}\b'''
+keywords = ["akia"]
+
+[[rules]]
+id = "cf-slack-token"
+description = "Slack token"
+regex = '''\bxox[abprs]-[A-Za-z0-9-]{10,}'''
+keywords = ["xoxa-", "xoxb-", "xoxp-", "xoxr-", "xoxs-"]
+
+[[rules]]
+id = "cf-stripe-live-key"
+description = "Stripe live key"
+regex = '''\b(?:sk|rk)_live_[A-Za-z0-9]{20,}'''
+keywords = ["_live_"]
+
+[[rules]]
+id = "cf-mcp-token"
+description = "A minted Casefile MCP token (mcp_sec_ and 32 or more random characters)"
+regex = '''\bmcp_sec_[A-Za-z0-9]{32,}\b'''
+keywords = ["mcp_sec_"]

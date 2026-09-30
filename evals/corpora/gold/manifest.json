@@ -1,0 +1,31 @@
+{
+  "set": "gold",
+  "prd_section": "61.2",
+  "target_size": 500,
+  "unit": "documents",
+  "actual_size": 525,
+  "provenance": "synthetic",
+  "generator_version": "1.0.0",
+  "vertical": "corporate_due_diligence_and_fraud",
+  "failure_modes_represented": {
+    "conflicting_date": 81,
+    "dangling_reference": 96,
+    "handwriting": 68,
+    "hidden_text": 93,
+    "layout_table": 73,
+    "missing_signature": 68,
+    "mixed_language": 77,
+    "name_variant": 64,
+    "near_duplicate": 25,
+    "ocr_noise": 68,
+    "precision_difference": 80,
+    "transliteration": 77
+  },
+  "licensed_material": false,
+  "contains_real_personal_data": false,
+  "label_count": 2617,
+  "generator": "evals/harness/generate_gold.py",
+  "seed": 20260830,
+  "corpus_sha256": "147835149ee95ae5f7718c500485a140c924b1354735aa12b5821f2ac7f89b75",
+  "note": "Every entity, company, bank and account number here is invented. Replace with design-partner material under the same label schema as it arrives."
+}

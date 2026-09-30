@@ -1,0 +1,91 @@
+# Casefile local development stack.
+#
+# Production and staging run on Supabase (D42) and Google Cloud Storage (D43).
+# This file is the OFFLINE path: it exists so the whole test suite runs with no
+# network, no Supabase project, and no GCS credentials. Anything that only works
+# against a live Supabase project is a test that will be skipped on a bad day,
+# and a skipped tenancy test is worse than no tenancy test.
+#
+#   docker compose -f infra/compose.yml up -d
+#
+# Where Docker is unavailable, scripts/dev-db.sh brings up the same Postgres
+# natively (DEV-001) and STORAGE_DRIVER=memory replaces the bucket.
+
+name: casefile
+
+services:
+  postgres:
+    # Matches what Supabase gives us: Postgres with `vector` and `pg_trgm`.
+    # The point of running it locally is that RLS behaves identically, so the
+    # tenancy guardrail is meaningful offline.
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: casefile
+      POSTGRES_PASSWORD: casefile
+      POSTGRES_DB: casefile
+    command:
+      - postgres
+      - -c
+      - log_min_duration_statement=200
+      - -c
+      - max_connections=100
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - random_page_cost=1.1
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./ci/init-db.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U casefile -d casefile"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  fake-gcs:
+    # Stands in for the GCS buckets (D43). Most tests use the in-memory storage
+    # adapter; this exists for the cases that need real HTTP semantics —
+    # resumable uploads, signed URL shapes, generation numbers.
+    #
+    # It does NOT emulate a locked retention policy, which is the control T7
+    # actually depends on. That is verified against a real bucket in staging and
+    # is tracked as a manual check, not pretended at locally.
+    image: fsouza/fake-gcs-server:latest
+    command: ["-scheme", "http", "-port", "4443", "-public-host", "127.0.0.1:4443"]
+    ports:
+      - "4443:4443"
+    volumes:
+      - gcsdata:/storage
+
+  redis:
+    # Queues and ephemeral coordination only. Nothing durable and nothing
+    # tenant-visible lives here; every cache key is tenant-prefixed (T3).
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mock-provider:
+    # D36 — the deterministic model provider, and load-bearing. Built in E1, not
+    # E8: I5, I6 and all of §56.7 are untestable without a fake that can be
+    # scripted to return malformed output, hallucinated citations, and compliance
+    # with injected instructions.
+    build:
+      context: ..
+      dockerfile: packages/mock-provider/Dockerfile
+    environment:
+      MOCK_SCRIPT_DIR: /scripts
+    ports:
+      - "8088:8088"
+    profiles: ["ai"]
+
+volumes:
+  pgdata:
+  gcsdata:

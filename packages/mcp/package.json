@@ -1,0 +1,21 @@
+{
+  "name": "@casefile/mcp",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server for Casefile Investigation Platform",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@casefile/audit": "workspace:*",
+    "@casefile/contracts": "workspace:*",
+    "@casefile/db": "workspace:*",
+    "@casefile/policy": "workspace:*",
+    "@casefile/storage": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "postgres": "^3.4.9",
+    "zod": "^3.24.1"
+  }
+}

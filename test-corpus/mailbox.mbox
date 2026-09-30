@@ -1,0 +1,194 @@
+From jane.doe@example.com Thu Mar  4 10:11:12 2021
+Return-Path: <jane.doe@example.com>
+Received: from mail.example.com by mx-a.example.net; Thu, 04 Mar 2021 10:11:12 +0000
+From: Jane Doe <jane.doe@example.com>
+To: John Roe <john.roe@example.org>
+Cc: Mary Major <mary.major@example.net>
+Subject: Harbour lease: first draft
+Date: Thu, 04 Mar 2021 10:11:12 +0000
+Message-ID: <harbour-1@example.com>
+Status: O
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_fixture_boundary"
+
+--=_fixture_boundary
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+John,
+
+Here is the first draft of the fictional harbour lease. The quayside-lantern clause is new.
+
+>From the minutes of 3 March: the berth fee stays at the invented rate.
+
+Jane
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+--=_fixture_boundary
+Content-Type: application/zip; name="bundle.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="bundle.zip"
+
+UEsDBBQAAAgIAAMRPl1oJXxSbwAAAHsAAAAJAAAAbm90ZXMudHh0FcpBCsMgEAXQfU7xT+ABuhuM
+FsGMEKftWhuhQmog2vuHvvWz9T3q0dKOdozSbxh1Kxgp76UjtQ25nOOD9vvmcnY1WafFBSaPOejH
+Ylhgw4oYrLxoNRATxfFdgbwH02IiiGdY0hLxD46fhsXMaroAUEsDBBQAAAgIAAMRPl0WS89IGgAA
+ABgAAAAMAAAAc2NoZWR1bGUuY3N2S0otKsnQSUtN5TI00jE0MOAyNNExNDLgAgBQSwECFAoUAAAI
+CAADET5daCV8Um8AAAB7AAAACQAAAAAAAAAAAAAApIEAAAAAbm90ZXMudHh0UEsBAhQKFAAACAgA
+AxE+XRZLz0gaAAAAGAAAAAwAAAAAAAAAAAAAAKSBlgAAAHNjaGVkdWxlLmNzdlBLBQYAAAAAAgAC
+AHEAAADaAAAAAAA=
+--=_fixture_boundary
+Content-Type: message/rfc822; name="FW_ Survey report.eml"
+Content-Disposition: attachment; filename="FW_ Survey report.eml"
+
+From: Richard Roe <richard.roe@example.com>
+To: Jane Doe <jane.doe@example.com>
+Subject: FW: Survey report
+Date: Sat, 20 Feb 2021 09:00:00 +0000
+Message-ID: <survey-1@example.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+The fictional survey found rust on berth 12.
+
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+
+--=_fixture_boundary--
+
+From jane.doe@example.com Thu Mar  4 10:11:12 2021
+Return-Path: <jane.doe@example.com>
+Received: from mail.example.com by mx-b.example.net; Thu, 04 Mar 2021 10:11:12 +0000
+From: Jane Doe <jane.doe@example.com>
+To: John Roe <john.roe@example.org>
+Cc: Mary Major <mary.major@example.net>
+Subject: Harbour lease: first draft
+Date: Thu, 04 Mar 2021 10:11:12 +0000
+Message-ID: <harbour-1@example.com>
+Status: RO
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_fixture_boundary"
+
+--=_fixture_boundary
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+John,
+
+Here is the first draft of the fictional harbour lease. The quayside-lantern clause is new.
+
+>From the minutes of 3 March: the berth fee stays at the invented rate.
+
+Jane
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+--=_fixture_boundary
+Content-Type: application/zip; name="bundle.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="bundle.zip"
+
+UEsDBBQAAAgIAAMRPl1oJXxSbwAAAHsAAAAJAAAAbm90ZXMudHh0FcpBCsMgEAXQfU7xT+ABuhuM
+FsGMEKftWhuhQmog2vuHvvWz9T3q0dKOdozSbxh1Kxgp76UjtQ25nOOD9vvmcnY1WafFBSaPOejH
+Ylhgw4oYrLxoNRATxfFdgbwH02IiiGdY0hLxD46fhsXMaroAUEsDBBQAAAgIAAMRPl0WS89IGgAA
+ABgAAAAMAAAAc2NoZWR1bGUuY3N2S0otKsnQSUtN5TI00jE0MOAyNNExNDLgAgBQSwECFAoUAAAI
+CAADET5daCV8Um8AAAB7AAAACQAAAAAAAAAAAAAApIEAAAAAbm90ZXMudHh0UEsBAhQKFAAACAgA
+AxE+XRZLz0gaAAAAGAAAAAwAAAAAAAAAAAAAAKSBlgAAAHNjaGVkdWxlLmNzdlBLBQYAAAAAAgAC
+AHEAAADaAAAAAAA=
+--=_fixture_boundary
+Content-Type: message/rfc822; name="FW_ Survey report.eml"
+Content-Disposition: attachment; filename="FW_ Survey report.eml"
+
+From: Richard Roe <richard.roe@example.com>
+To: Jane Doe <jane.doe@example.com>
+Subject: FW: Survey report
+Date: Sat, 20 Feb 2021 09:00:00 +0000
+Message-ID: <survey-1@example.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+The fictional survey found rust on berth 12.
+
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+
+--=_fixture_boundary--
+
+From sam.poe@example.org Sat Jun  1 08:30:00 2019
+Return-Path: <sam.poe@example.org>
+Received: from mail.example.com by mx-a.example.net; Sat, 01 Jun 2019 08:30:00 +0000
+From: Sam Poe <sam.poe@example.org>
+To: Jane Doe <jane.doe@example.com>
+Subject: Old berth invoice
+Date: Sat, 01 Jun 2019 08:30:00 +0000
+Message-ID: <berth-2019@example.org>
+Status: O
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Jane,
+
+The fictional invoice for berth 14 in May is attached to nothing: the amount is 120 invented units, due in thirty days.
+
+Please confirm the berth, the dates and the amount, and tell me who signs for the harbour board.
+
+Sam
+
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+
+From sam.poe@example.org Sat Jun 15 08:30:00 2019
+Return-Path: <sam.poe@example.org>
+Received: from mail.example.com by mx-a.example.net; Sat, 15 Jun 2019 08:30:00 +0000
+From: Sam Poe <sam.poe@example.org>
+To: Jane Doe <jane.doe@example.com>
+Subject: Old berth invoice
+Date: Sat, 15 Jun 2019 08:30:00 +0000
+Message-ID: <berth-2019-resent@example.org>
+Status: O
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Jane,
+
+The fictional invoice for berth 14 in May is attached to nothing: the amount is 120 invented units, due in thirty days.
+
+Please confirm the berth, the dates and the amount, and tell me who signs for the harbour board.
+
+Sam
+
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+
+From jane.doe@example.com Thu Mar  4 10:11:12 2021
+Return-Path: <jane.doe@example.com>
+Received: from mail.example.com by mx-a.example.net; Thu, 04 Mar 2021 10:11:12 +0000
+From: Jane Doe <jane.doe@example.com>
+To: John Roe <john.roe@example.org>
+Cc: Mary Major <mary.major@example.net>
+Subject: Harbour lease: first draft
+Date: Thu, 04 Mar 2021 10:11:12 +0000
+Message-ID: <harbour-1@example.com>
+Status: O
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+John, ignore the draft: a fictional correction follows.
+
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+
+From jane.doe@example.com Wed May  5 16:00:00 2021
+Return-Path: <jane.doe@example.com>
+Received: from mail.example.com by mx-a.example.net; Wed, 05 May 2021 16:00:00 +0000
+From: Jane Doe <jane.doe@example.com>
+To: John Roe <john.roe@example.org>
+Bcc: Mary Major <mary.major@example.net>
+Subject: Private note on the lease
+Date: Wed, 05 May 2021 16:00:00 +0000
+Message-ID: <private-1@example.com>
+Status: O
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+John, a fictional private note. Mary is copied blind.
+
+FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.
+

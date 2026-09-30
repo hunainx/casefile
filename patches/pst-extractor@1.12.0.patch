@@ -1,0 +1,119 @@
+diff --git a/dist/PSTFolder.class.js b/dist/PSTFolder.class.js
+index c1fb49b94789956ad16887d7354c7c6502250304..2c8fd129b1101e0f85bc3bb4e783387f8b9fc761 100644
+--- a/dist/PSTFolder.class.js
++++ b/dist/PSTFolder.class.js
+@@ -150,42 +150,66 @@ class PSTFolder extends PSTObject_class_1.PSTObject {
+      * @memberof PSTFolder
+      */
+     getNextChild() {
++        // Casefile patch (BIGDATA-3B): a message that cannot be loaded used to be skipped with only a
++        // console line ("Exception Error in No: ..."), so it disappeared without a record, and in the
++        // fallback branch an error left the cursor in place. Each such message is now recorded in
++        // this.childErrors ({ index, nodeId, error }) and the cursor moves on.
+         this.initEmailsTable();
++        const record = (index, nodeId, err) => {
++            if (!this.childErrors) this.childErrors = [];
++            this.childErrors.push({ index, nodeId, error: err && err.message ? err.message : String(err) });
++        };
+         if (this.emailsTable) {
+-            if (this.currentEmailIndex == this.contentCount) {
+-                // no more!
+-                return null;
+-            }
+-            // get the emails from the rows in the main email table
+-            const rows = this.emailsTable.getItems(this.currentEmailIndex, 1);
+-            const emailRow = rows[0].get(0x67f2);
+-            if ((emailRow && emailRow.itemIndex == -1) || !emailRow) {
+-                // no more!
+-                return null;
+-            }
+-            const childDescriptor = this.pstFile.getDescriptorIndexNode(long_1.default.fromNumber(emailRow.entryValueReference));
+-            let child;
+-            try {
+-                child = PSTUtil_class_1.PSTUtil.detectAndLoadPSTObject(this.pstFile, childDescriptor);
+-            }
+-            catch (err) {
+-                console.log('Exception Error in No: ', this.currentEmailIndex);
+-                this.currentEmailIndex++;
+-                return this.getNextChild();
++            for (;;) {
++                if (this.currentEmailIndex >= this.contentCount) {
++                    return null;
++                }
++                const index = this.currentEmailIndex;
++                let emailRow;
++                try {
++                    const rows = this.emailsTable.getItems(index, 1);
++                    emailRow = rows[0] ? rows[0].get(0x67f2) : undefined;
++                }
++                catch (err) {
++                    record(index, null, err);
++                    this.currentEmailIndex++;
++                    continue;
++                }
++                if ((emailRow && emailRow.itemIndex == -1) || !emailRow) {
++                    record(index, null, new Error('the contents table has no row ' + index + ' of ' + this.contentCount + ': reading of this folder stopped here'));
++                    this.currentEmailIndex = this.contentCount;
++                    return null;
++                }
++                try {
++                    const childDescriptor = this.pstFile.getDescriptorIndexNode(long_1.default.fromNumber(emailRow.entryValueReference));
++                    const child = PSTUtil_class_1.PSTUtil.detectAndLoadPSTObject(this.pstFile, childDescriptor);
++                    this.currentEmailIndex++;
++                    return child;
++                }
++                catch (err) {
++                    record(index, emailRow.entryValueReference, err);
++                    this.currentEmailIndex++;
++                }
+             }
+-            this.currentEmailIndex++;
+-            return child;
+         }
+         else if (this.fallbackEmailsTable) {
+-            if (this.currentEmailIndex >= this.contentCount ||
+-                this.currentEmailIndex >= this.fallbackEmailsTable.length) {
+-                // no more!
+-                return null;
++            for (;;) {
++                if (this.currentEmailIndex >= this.contentCount ||
++                    this.currentEmailIndex >= this.fallbackEmailsTable.length) {
++                    return null;
++                }
++                const index = this.currentEmailIndex;
++                const childDescriptor = this.fallbackEmailsTable[index];
++                try {
++                    const child = PSTUtil_class_1.PSTUtil.detectAndLoadPSTObject(this.pstFile, childDescriptor);
++                    this.currentEmailIndex++;
++                    return child;
++                }
++                catch (err) {
++                    record(index, childDescriptor ? childDescriptor.descriptorIdentifier : null, err);
++                    this.currentEmailIndex++;
++                }
+             }
+-            const childDescriptor = this.fallbackEmailsTable[this.currentEmailIndex];
+-            const child = PSTUtil_class_1.PSTUtil.detectAndLoadPSTObject(this.pstFile, childDescriptor);
+-            this.currentEmailIndex++;
+-            return child;
+         }
+         return null;
+     }
+diff --git a/dist/PSTMessage.class.js b/dist/PSTMessage.class.js
+index 49c646c60cb71c755fec33c72ffc3e44d76445b0..0a4816853d34e551261884b38283b44c392cb2ab 100644
+--- a/dist/PSTMessage.class.js
++++ b/dist/PSTMessage.class.js
+@@ -469,7 +469,12 @@ class PSTMessage extends PSTObject_class_1.PSTObject {
+             if (descriptorItem.subNodeOffsetIndexIdentifier > 0) {
+                 attachmentDescriptorItems = this.pstFile.getPSTDescriptorItems(long_1.default.fromNumber(descriptorItem.subNodeOffsetIndexIdentifier));
+             }
+-            return new PSTAttachment_class_1.PSTAttachment(this.pstFile, attachmentDetailsTable, attachmentDescriptorItems);
++            const attachment = new PSTAttachment_class_1.PSTAttachment(this.pstFile, attachmentDetailsTable, attachmentDescriptorItems);
++            // Casefile patch (BIGDATA-3B): PSTAttachment.embeddedPSTMessage needs a descriptor node
++            // and returned null for every embedded message (attach method 5) because none was set.
++            // The parent message's node is the one the embedded message's reader needs.
++            attachment.descriptorIndexNode = this.descriptorIndexNode;
++            return attachment;
+         }
+         throw new Error('PSTMessage::getAttachment unable to fetch attachment number ' +
+             attachmentNumber +

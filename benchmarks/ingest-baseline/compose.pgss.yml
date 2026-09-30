@@ -1,0 +1,19 @@
+# Overlay for the BIGDATA-1 ingest baseline only: the same local Postgres with
+# pg_stat_statements loaded, so the run can report which statements took the time.
+#   docker compose -f infra/compose.yml -f benchmarks/ingest-baseline/compose.pgss.yml up -d
+services:
+  postgres:
+    command:
+      - postgres
+      - -c
+      - log_min_duration_statement=200
+      - -c
+      - max_connections=100
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - pg_stat_statements.track=all

@@ -1,0 +1,13 @@
+{
+  "set": "resolution",
+  "prd_section": "61.2",
+  "target_size": 1000,
+  "unit": "pairs",
+  "actual_size": 0,
+  "provenance": "synthetic",
+  "generator_version": null,
+  "vertical": "corporate_due_diligence_and_fraud",
+  "failure_modes_represented": [],
+  "licensed_material": false,
+  "contains_real_personal_data": false
+}

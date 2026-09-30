@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Example Secure File Share - Shared Files</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 2em; color: #222; }
+  .file { padding: 0.4em 0; border-bottom: 1px solid #ddd; }
+  .banner { background: #eef; padding: 0.5em; }
+</style>
+<script>
+  // Tracking stub from the fictional file-share vendor. Must not appear in extracted text.
+  window.exampleShare = { sessionId: "00000000-0000-0000-0000-000000000000" };
+  function onDownload(name) { console.log("download", name); }
+</script>
+</head>
+<body>
+<div class="banner">FICTIONAL DOCUMENT FOR SOFTWARE TESTING. ALL NAMES AND FACTS ARE INVENTED.</div>
+<div class="title"><strong>Citrix Attachments</strong></div>
+<p>Jane Doe (jane.doe@acme-holdings.example) has shared 3 files with you from
+Acme Holdings, LLC, 123 Example Street, Sampletown, EX 00000.</p>
+<div class="file"><a href="#" onclick="onDownload('Example Wire Instructions.pdf')">Example Wire Instructions.pdf</a>
+  <span>Example Widget Distributors - wire instructions for the deposit (48 KB)</span></div>
+<div class="file"><a href="#" onclick="onDownload('Purchase Order 0001.pdf')">Purchase Order 0001.pdf</a>
+  <span>Purchase order for blue widgets (112 KB)</span></div>
+<div class="file"><a href="#" onclick="onDownload('Inventory Count Week 3.xlsx')">Inventory Count Week 3.xlsx</a>
+  <span>Weekly inventory count sent to Mary Major (20 KB)</span></div>
+<p>These links expire in 7 days. Questions? Contact John Roe at john.roe@example.com.</p>
+</body>
+</html>

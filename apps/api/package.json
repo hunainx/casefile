@@ -1,0 +1,37 @@
+{
+  "name": "@casefile/api",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts",
+    "./app": "./src/app.ts"
+  },
+  "dependencies": {
+    "@casefile/audit": "workspace:*",
+    "@casefile/contracts": "workspace:*",
+    "@casefile/db": "workspace:*",
+    "@casefile/mcp": "workspace:*",
+    "@casefile/mock-provider": "workspace:*",
+    "@casefile/policy": "workspace:*",
+    "@casefile/storage": "workspace:*",
+    "@fastify/cors": "^10.0.2",
+    "@kenjiuno/msgreader": "^1.28.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@simplewebauthn/server": "^13.3.3",
+    "adm-zip": "^0.6.0",
+    "argon2": "^0.41.1",
+    "fastify": "^5.2.1",
+    "html-to-text": "^10.0.1",
+    "mailparser": "^3.9.20",
+    "mammoth": "^1.12.2",
+    "pdf-lib": "^1.17.1",
+    "postgres": "^3.4.9",
+    "unpdf": "^1.8.1",
+    "word-extractor": "^1.0.4",
+    "xlsx": "^0.18.5",
+    "zod": "^3.24.1"
+  }
+}

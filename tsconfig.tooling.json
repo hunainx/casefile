@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "types": ["node"] },
+  "include": [
+    "traceability/**/*.ts",
+    "guardrails/**/*.ts",
+    "scripts/**/*.ts",
+    "tools/**/*.ts",
+    "benchmarks/**/*.ts",
+    "infra/**/*.ts",
+    "test-corpus/generate/**/*.ts",
+    "matter.config.ts",
+    "vitest.unit.config.ts",
+    "vitest.integration.config.ts"
+  ]
+}

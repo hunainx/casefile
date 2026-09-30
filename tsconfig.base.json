@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@casefile/db": ["packages/db/src/index.ts"],
+      "@casefile/db/*": ["packages/db/src/*"],
+      "@casefile/audit": ["packages/audit/src/index.ts"],
+      "@casefile/audit/*": ["packages/audit/src/*"],
+      "@casefile/policy": ["packages/policy/src/index.ts"],
+      "@casefile/policy/*": ["packages/policy/src/*"],
+      "@casefile/contracts": ["packages/contracts/src/index.ts"],
+      "@casefile/contracts/*": ["packages/contracts/src/*"],
+      "@casefile/storage": ["packages/storage/src/index.ts"],
+      "@casefile/storage/*": ["packages/storage/src/*"],
+      "@casefile/mock-provider": ["packages/mock-provider/src/index.ts"],
+      "@casefile/mock-provider/*": ["packages/mock-provider/src/*"],
+      "@casefile/mcp": ["packages/mcp/src/index.ts"],
+      "@casefile/mcp/*": ["packages/mcp/src/*"],
+      "@casefile/api": ["apps/api/src/index.ts"],
+      "@casefile/api/*": ["apps/api/src/*"]
+    }
+  }
+}

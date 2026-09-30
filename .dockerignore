@@ -1,0 +1,32 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+.github
+
+# Dependencies
+node_modules
+**/node_modules
+
+# Tests, coverage, and artifacts
+test-results
+**/test-results
+coverage
+**/coverage
+sandbox
+**/sandbox
+test-corpus
+**/test-corpus
+*.log
+.pgdata
+.pglogs
+*.tsbuildinfo
+
+# Build & scratch
+.system_generated
+scratch
+*.zip
