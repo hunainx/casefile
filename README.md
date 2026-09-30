@@ -5,6 +5,8 @@ keeps the originals untouched, turns their text into searchable, citable passage
 through an MCP connection, with every answer pointing back to the document and the page it came from. It never
 decides on its own that something is true.
 
+![Casefile in 46 seconds: own cloud per case, files in, triage, parallel workers, audit log, ask Claude, cited answers](docs/media/casefile-demo.gif)
+
 Each case ("matter") runs on its own: its own database, its own storage buckets, its own cloud project. Nothing
 is shared between cases.
 
