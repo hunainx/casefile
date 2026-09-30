@@ -157,3 +157,9 @@ Casefile is free software under the **GNU Affero General Public License v3.0** (
 [`LICENSE`](LICENSE). If you run a modified version as a network service, you must offer its users the
 corresponding source code. Third-party components keep their own licences:
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+## Professional setup and support
+
+Want Casefile set up and run for your firm or a specific case? I offer setup on your own cloud, file processing, and ongoing support.
+
+Contact: [hunainibnshakeel@gmail.com](mailto:hunainibnshakeel@gmail.com)
